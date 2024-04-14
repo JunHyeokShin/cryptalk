@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import AuthForm from './components/AuthForm'
-import clsx from 'clsx'
 
 export default function Home() {
   return (
