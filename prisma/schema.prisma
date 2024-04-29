@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
+model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   username String?
   email String? @unique
@@ -32,31 +32,31 @@ model User{
   friendIds String[] @db.ObjectId
   friends User[] @relation("friends", fields: [friendIds], references: [id])
 
-  fId String[] @db.ObjectId
-  f User[] @relation("friends", fields: [fId], references: [id])
+  friendOfIds String[] @db.ObjectId
+  friendOf User[] @relation("friends", fields: [friendOfIds], references: [id])
 
-messages Message[]
+  messages Message[]
 }
 
 model Conversation {
-id String @id @default(auto()) @map("_id") @db.ObjectId
-createdAt DateTime @default(now())
-lastMessageAt DateTime @default(now())
-name String?
-isGroup Boolean?
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  lastMessageAt DateTime @default(now())
+  name String?
+  isGroup Boolean?
 
-messagesIds String[] @db.ObjectId
-messages Message[]
-
-userIds String[] @db.ObjectId
-user User[] @relation(fields: [userIds], references: [id])
+  messagesIds String[] @db.ObjectId
+  messages Message[]
+  
+  userIds String[] @db.ObjectId
+  user User[] @relation(fields: [userIds], references: [id])
 }
 
 model Message {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   body String?
   image String?
-  createAt DateTime @default(now())
+  createdAt DateTime @default(now())
 
   seenIds String[] @db.ObjectId
   seen User[] @relation("Seen", fields: [seenIds], references: [id])
