@@ -2,10 +2,11 @@
 
 import Button from '@/components/Button'
 import Input from '@/components/inputs/Input'
+import axios from 'axios'
+import { signIn } from 'next-auth/react'
 import { useCallback, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import AuthSocialButton from './AuthSocialButton'
-import { BsGithub, BsGoogle } from 'react-icons/bs'
+import toast from 'react-hot-toast'
 
 type Variant = 'LOGIN' | 'REGISTER'
 
@@ -37,18 +38,27 @@ export default function AuthForm() {
     setIsLoading(true)
 
     if (variant === 'REGISTER') {
-      // Axios 회원가입 코드
+      axios
+        .post('/api/register', data)
+        .catch(() => toast.error('Something went wrong!'))
+        .finally(() => setIsLoading(false))
     }
 
     if (variant === 'LOGIN') {
-      // NextAuth 로그인 코드
+      signIn('credentials', {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('invalid credentials')
+          }
+          if (callback?.ok && !callback?.error) {
+            toast.success('로그인 성공')
+          }
+        })
+        .finally(() => setIsLoading(false))
     }
-  }
-
-  const socialAction = (action: string) => {
-    setIsLoading(true)
-
-    // NextAuth 소셜 로그인 코드
   }
 
   return (
@@ -61,6 +71,7 @@ export default function AuthForm() {
               label="이름"
               register={register}
               errors={errors}
+              disabled={isLoading}
             />
           )}
           <Input
@@ -69,6 +80,7 @@ export default function AuthForm() {
             type="email"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <Input
             id="password"
@@ -76,6 +88,7 @@ export default function AuthForm() {
             type="password"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <div>
             <Button disabled={isLoading} fullWidth type="submit">
@@ -83,26 +96,6 @@ export default function AuthForm() {
             </Button>
           </div>
         </form>
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">또는</span>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 flex gap-2">
-          <AuthSocialButton
-            icon={BsGithub}
-            onClick={() => socialAction('github')}
-          />
-          <AuthSocialButton
-            icon={BsGoogle}
-            onClick={() => socialAction('google')}
-          />
-        </div>
         <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500">
           <div>
             {variant === 'LOGIN'
