@@ -8,7 +8,19 @@ export async function POST(request: Request) {
     const { email, username, password } = body
 
     if (!email || !username || !password) {
-      return new NextResponse('Missing info', { status: 400 })
+      return new NextResponse('회원가입 정보가 잘못되었습니다.', {
+        status: 400,
+      })
+    }
+
+    const exist = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    })
+
+    if (exist) {
+      return new NextResponse('이미 등록된 이메일입니다.', { status: 400 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -23,6 +35,6 @@ export async function POST(request: Request) {
     return NextResponse.json(user)
   } catch (error: any) {
     console.log(error, 'REGISTERATION_ERROR')
-    return new NextResponse('INtenal Error', { status: 500 })
+    return new NextResponse('알 수 없는 오류가 발생했습니다.', { status: 500 })
   }
 }
