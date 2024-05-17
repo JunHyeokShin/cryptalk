@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import AuthForm from './components/AuthForm'
+import AuthForm from '@/components/auth/AuthForm'
 
-export default function Home() {
+export default function AuthPage() {
   return (
     <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8bg-gray-100">
       <div className="sm:mx-auto sm:w-full">

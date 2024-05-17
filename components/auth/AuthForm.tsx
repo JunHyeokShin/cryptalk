@@ -1,18 +1,27 @@
 'use client'
 
-import Button from '@/components/Button'
-import Input from '@/components/inputs/Input'
 import axios from 'axios'
-import { signIn } from 'next-auth/react'
-import { useCallback, useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
+import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import Input from '../Input'
+import Button from '../Button'
+import { useRouter } from 'next/navigation'
 
 type Variant = 'LOGIN' | 'REGISTER'
 
 export default function AuthForm() {
+  const session = useSession()
+  const router = useRouter()
   const [variant, setVariant] = useState<Variant>('LOGIN')
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/people')
+    }
+  }, [session.status, router])
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
@@ -37,13 +46,27 @@ export default function AuthForm() {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
 
+    // 회원가입
     if (variant === 'REGISTER') {
       axios
         .post('/api/register', data)
-        .catch(() => toast.error('Something went wrong!'))
+        .then(() =>
+          signIn('credentials', { ...data, redirect: false }).then(
+            (callback) => {
+              if (callback?.error) {
+                toast.error(callback.error)
+              }
+              if (callback?.ok && !callback?.error) {
+                toast.success('회원가입이 완료되었습니다.')
+              }
+            }
+          )
+        )
+        .catch((error) => toast.error(error.response.data))
         .finally(() => setIsLoading(false))
     }
 
+    // 로그인
     if (variant === 'LOGIN') {
       signIn('credentials', {
         ...data,
@@ -51,7 +74,7 @@ export default function AuthForm() {
       })
         .then((callback) => {
           if (callback?.error) {
-            toast.error('invalid credentials')
+            toast.error(callback.error)
           }
           if (callback?.ok && !callback?.error) {
             toast.success('로그인 성공')
