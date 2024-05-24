@@ -2,20 +2,20 @@ import prisma from '@/libs/prismadb'
 import { NextResponse } from 'next/server'
 
 type Params = {
-  params: { friendRequestedEmail: string }
+  params: { id: string }
 }
 
 export async function GET(request: Request, { params }: Params) {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email: params.friendRequestedEmail,
+        id: params.id,
       },
       include: {
         friendRequests: {
           select: {
-            username: true,
-            email: true,
+            id: true,
+            name: true,
             image: true,
           },
         },
@@ -23,7 +23,9 @@ export async function GET(request: Request, { params }: Params) {
     })
     return NextResponse.json(user?.friendRequests)
   } catch (error: any) {
-    console.log(error, 'GET_FRIEND_REQUESTS_ERROR')
-    return new NextResponse('알 수 없는 오류가 발생했습니다.', { status: 500 })
+    console.log(error, 'GET_FRIENDS_ERROR')
+    return new NextResponse('친구 요청 목록을 불러오는데 실패했습니다.', {
+      status: 500,
+    })
   }
 }

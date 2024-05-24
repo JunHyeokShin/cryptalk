@@ -10,42 +10,38 @@ type Props = {
   clickModal: () => void
 }
 
-type FriendRequesters = {
-  username: string
-  email: string
-  image: string | null
-}[]
+type Person = {
+  id: string
+  name: string
+  image: string
+}
 
 type Response = 'ACCEPT' | 'DECLINE'
 
 export default function FriendRequestsModal({ clickModal }: Props) {
   const [isLoading, setIsLoading] = useState(true)
   const [refresh, setRefresh] = useState(0)
-  const [friendRequesters, setFriendRequesters] = useState<FriendRequesters>()
+  const [friendRequesters, setFriendRequesters] = useState<Person[]>()
   const session = useSession()
-  const friendRequestedEmail = session.data?.user?.email
+  const currentUser = session.data?.user
 
   useEffect(() => {
-    if (session.status === 'authenticated')
-      axios
-        .get(`/api/friend/request/${friendRequestedEmail}`)
-        .then((res) => {
-          setFriendRequesters(res.data)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
-  }, [session, refresh])
-
-  const handleClick = (
-    friendRequesterEmail: string | null,
-    response: Response
-  ) => {
     axios
+      .get(`/api/friend/request/${currentUser?.id}`)
+      .then((res) => {
+        setFriendRequesters(res.data)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [refresh])
+
+  const handleClick = async (friendRequesterId: string, response: Response) => {
+    await axios
       .post('/api/friend/request/response', {
-        friendRequestedEmail,
-        friendRequesterEmail,
-        response: response,
+        friendRequestedId: currentUser?.id,
+        friendRequesterId,
+        response,
       })
       .then((res) => toast.success(res.data))
       .finally(() => setRefresh(refresh + 1))
@@ -64,7 +60,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                 setIsLoading(true)
                 setRefresh(refresh + 1)
               }}
-              className="rounded-xl hover:bg-gray-100 active:bg-gray-200 p-2"
+              className="rounded-xl p-2 hover:bg-gray-100 hover:shadow-md active:shadow-sm"
             >
               <BsArrowRepeat className="text-[16px]" />
             </button>
@@ -72,7 +68,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
 
           <button
             onClick={clickModal}
-            className="rounded-xl hover:bg-gray-100 active:bg-gray-200"
+            className="rounded-xl hover:bg-gray-100 hover:shadow-md active:shadow-sm"
           >
             <BsX className="text-[28px]" />
           </button>
@@ -86,25 +82,24 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                 <div className="my-2">대기 중인 친구 요청이 없습니다.</div>
               ) : (
                 friendRequesters?.map((friendRequester) => (
-                  <div className="my-2">
+                  <div className="my-2" key={friendRequester.id}>
                     <div className="flex justify-between bg-gray-100 rounded-lg">
                       <div className="flex px-2">
-                        <div className="p-2">{friendRequester.username}</div>
-                        <div className="p-2">{friendRequester.email}</div>
+                        <div className="p-2">{friendRequester.name}</div>
                       </div>
                       <div className="flex items-center mx-2">
                         <button
-                          className="rounded-xl hover:bg-gray-200 active:bg-gray-300"
+                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm"
                           onClick={() =>
-                            handleClick(friendRequester.email, 'ACCEPT')
+                            handleClick(friendRequester.id, 'ACCEPT')
                           }
                         >
                           <BsCheck className="text-[28px] text-green-600" />
                         </button>
                         <button
-                          className="rounded-xl hover:bg-gray-200 active:bg-gray-300"
+                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm"
                           onClick={() =>
-                            handleClick(friendRequester.email, 'DECLINE')
+                            handleClick(friendRequester.id, 'DECLINE')
                           }
                         >
                           <BsX className="text-[28px] text-red-600" />

@@ -1,11 +1,9 @@
+import Conversation from '@/components/conversation/Conversation'
+
 type Props = {
   params: { conversationId: string }
 }
 
 export default function ConversationPage({ params }: Props) {
-  return (
-    <div>
-      <p>{params.conversationId}</p>
-    </div>
-  )
+  return <Conversation conversationId={params.conversationId} />
 }

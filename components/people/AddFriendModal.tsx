@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { BsX } from 'react-icons/bs'
 import Input from '../Input'
 import Button from '../Button'
-import { BsX } from 'react-icons/bs'
+import { useSession } from 'next-auth/react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { useSession } from 'next-auth/react'
 
 type Props = {
   clickModal: () => void
@@ -15,7 +15,8 @@ type Props = {
 
 export default function AddFriendModal({ clickModal }: Props) {
   const [isLoading, setIsLoading] = useState(false)
-  const friendRequesterEmail = useSession().data?.user?.email
+  const session = useSession()
+  const currentUser = session.data?.user
 
   const {
     register,
@@ -23,19 +24,17 @@ export default function AddFriendModal({ clickModal }: Props) {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      email: '',
+      friendRequestedId: '',
     },
   })
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true)
-    const { friendRequestedEmail } = data
-
-    // 친구 요청
-    axios
-      .put('/api/friend/request', {
-        friendRequesterEmail,
-        friendRequestedEmail,
+    const { friendRequestedId } = data
+    await axios
+      .post('/api/friend/request', {
+        friendRequesterId: currentUser?.id,
+        friendRequestedId,
       })
       .then(() => {
         toast.success('친구 요청을 보냈습니다.')
@@ -56,16 +55,16 @@ export default function AddFriendModal({ clickModal }: Props) {
           <h1 className="text-gary-900 font-medium">친구 요청 보내기</h1>
           <button
             onClick={clickModal}
-            className="rounded-xl hover:bg-gray-100 active:bg-gray-200"
+            className="rounded-xl hover:bg-gray-100 hover:shadow-md active:shadow-sm"
           >
             <BsX className="text-[28px]" />
           </button>
         </div>
         <form className="space-y-2 my-2" onSubmit={handleSubmit(onSubmit)}>
           <Input
-            id="friendRequestedEmail"
-            label="상대방 이메일"
-            type="email"
+            id="friendRequestedId"
+            label="상대방 ID 값을 입력하세요"
+            type="text"
             register={register}
             errors={errors}
             disabled={isLoading}
