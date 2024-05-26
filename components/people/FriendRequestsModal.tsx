@@ -2,6 +2,7 @@
 
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { BsArrowRepeat, BsCheck, BsX } from 'react-icons/bs'
@@ -83,9 +84,21 @@ export default function FriendRequestsModal({ clickModal }: Props) {
               ) : (
                 friendRequesters?.map((friendRequester) => (
                   <div className="my-2" key={friendRequester.id}>
-                    <div className="flex justify-between bg-gray-100 rounded-lg">
-                      <div className="flex px-2">
-                        <div className="p-2">{friendRequester.name}</div>
+                    <div className="flex justify-between bg-gray-100 rounded-full">
+                      <div className="flex items-center p-2">
+                        <Image
+                          src={
+                            friendRequester.image ||
+                            '/images/default_profile.png'
+                          }
+                          alt="프로필 이미지"
+                          width={36}
+                          height={36}
+                          className="rounded-full mr-2"
+                        />
+                        <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                          {friendRequester.name}
+                        </div>
                       </div>
                       <div className="flex items-center mx-2">
                         <button
@@ -94,7 +107,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                             handleClick(friendRequester.id, 'ACCEPT')
                           }
                         >
-                          <BsCheck className="text-[28px] text-green-600" />
+                          <BsCheck className="text-3xl text-green-600" />
                         </button>
                         <button
                           className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm"
@@ -102,7 +115,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                             handleClick(friendRequester.id, 'DECLINE')
                           }
                         >
-                          <BsX className="text-[28px] text-red-600" />
+                          <BsX className="text-3xl text-red-600" />
                         </button>
                       </div>
                     </div>

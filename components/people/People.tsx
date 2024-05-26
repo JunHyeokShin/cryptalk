@@ -50,7 +50,7 @@ export default function People() {
 
   return (
     <div className="flex flex-col justify-between w-48 px-2 py-3 items-center bg-gray-100">
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full overflow-x-scroll">
         {isLoading ? (
           <div className="text-gray-600 text-center">불러오는 중...</div>
         ) : (

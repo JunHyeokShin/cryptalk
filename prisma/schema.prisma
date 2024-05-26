@@ -40,6 +40,32 @@ model User {
   updatedAt          DateTime       @updatedAt
 }
 
+model Conversation {
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  isGroup            Boolean?
+  createdAt          DateTime       @default(now())
+  lastMessageAt      DateTime       @default(now())
+
+  messages           Message[]
+
+  users              User[]         @relation(fields: [userIds], references: [id])
+  userIds            String[]       @db.ObjectId
+}
+
+model Message {
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  body               String?
+  image              String?
+  createdAt          DateTime       @default(now())
+
+  sender             User           @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId           String         @db.ObjectId
+
+  conversation       Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId     String         @db.ObjectId
+}
+
 model Account {
   id                 String         @id @default(auto()) @map("_id") @db.ObjectId
   userId             String         @db.ObjectId
@@ -80,31 +106,4 @@ model VerificationToken {
   expires            DateTime
 
   @@unique([identifier, token])
-}
-
-model Conversation {
-  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
-  name               String?
-  isGroup            Boolean?
-  createdAt          DateTime       @default(now())
-  lastMessageAt      DateTime       @default(now())
-
-  messages           Message[]
-  messageIds         String[]       @db.ObjectId
-
-  users              User[]         @relation(fields: [userIds], references: [id])
-  userIds            String[]       @db.ObjectId
-}
-
-model Message {
-  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
-  body               String?
-  image              String?
-  createdAt          DateTime       @default(now())
-
-  sender             User           @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  senderId           String[]       @db.ObjectId
-
-  conversation       Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  conversationId     String         @db.ObjectId
 }
