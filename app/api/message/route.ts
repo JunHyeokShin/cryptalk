@@ -24,6 +24,7 @@ export async function POST(request: Request) {
         sender: {
           select: {
             name: true,
+            image: true,
           },
         },
       },

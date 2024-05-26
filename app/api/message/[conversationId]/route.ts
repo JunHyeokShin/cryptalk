@@ -19,6 +19,7 @@ export async function GET(request: Request, { params }: Params) {
             sender: {
               select: {
                 name: true,
+                image: true,
               },
             },
           },
