@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { useSocket } from '@/contexts/SocketContext'
-import axios from 'axios'
-import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
-import ConversationBody from './ConversationBody'
-import { FieldValues, useForm } from 'react-hook-form'
-import { BsSend } from 'react-icons/bs'
+import { useSocket } from "@/contexts/SocketContext"
+import axios from "axios"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import ConversationBody from "./ConversationBody"
+import { FieldValues, useForm } from "react-hook-form"
+import { BsSend } from "react-icons/bs"
 
 type Props = {
   conversationId: string
@@ -31,8 +31,8 @@ export default function Conversation({ conversationId }: Props) {
     axios.get(`/api/message/${conversationId}`).then((res) => {
       setMessages(res.data.messages)
     })
-    socket.emit('join_conversation', conversationId)
-    socket.on('receive_message', (message: Message) => {
+    socket.emit("join_conversation", conversationId)
+    socket.on("receive_message", (message: Message) => {
       setMessages((prev) => [...prev, message])
     })
   }, [])
@@ -41,7 +41,7 @@ export default function Conversation({ conversationId }: Props) {
     const now = new Date()
     let message
     await axios
-      .post('/api/message', {
+      .post("/api/message", {
         senderId: currentUser?.id,
         conversationId,
         body: data.input,
@@ -50,7 +50,7 @@ export default function Conversation({ conversationId }: Props) {
       .then((res) => {
         message = res.data
       })
-    socket.emit('send_message', message)
+    socket.emit("send_message", message)
     reset()
   }
 
@@ -61,7 +61,7 @@ export default function Conversation({ conversationId }: Props) {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      input: '',
+      input: "",
     },
   })
 
@@ -72,16 +72,16 @@ export default function Conversation({ conversationId }: Props) {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center border-t border-gray-100 min-h-16"
+        className="flex items-center border-t border-gray-200 dark:border-neutral-600 min-h-16"
       >
         <input
           id="input"
           type="text"
-          {...register('input')}
+          {...register("input")}
           required={true}
           autoComplete="off"
           placeholder="메시지를 입력하세요..."
-          className="bg-gray-100 rounded-full px-4 m-2 w-full h-11 shadow-inner"
+          className="bg-gray-100 rounded-full px-4 m-2 w-full h-11 shadow-inner dark:bg-neutral-100 dark:text-black dark:shadow-inner dark:shadow-gray-600"
         />
         <button
           type="submit"

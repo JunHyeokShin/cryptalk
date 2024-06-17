@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { Session } from 'next-auth'
-import Image from 'next/image'
-import { useState } from 'react'
-import ProfileModal from './ProfileModal'
+import { Session } from "next-auth"
+import Image from "next/image"
+import { useState } from "react"
+import ProfileModal from "./ProfileModal"
 
 type Props = {
   session: Session | null
@@ -20,10 +20,10 @@ export default function ProfileButton({ session }: Props) {
     <div>
       <button
         onClick={clickProfileModal}
-        className="p-1 rounded-full hover:opacity-90 hover:bg-gray-300 hover:shadow-md active:shadow-sm"
+        className="p-1 rounded-full hover:opacity-90 hover:bg-gray-300 hover:shadow-md active:shadow-sm dark:hover:opacity-90 dark:hover:bg-neutral-700 dark:hover:shadow-md dark:hover:shadow-neutral-600 dark:active:shadow-sm"
       >
         <Image
-          src={session?.user?.image || '/images/default_profile.png'}
+          src={session?.user?.image || "/images/default_profile.png"}
           width={36}
           height={36}
           alt="profile"
