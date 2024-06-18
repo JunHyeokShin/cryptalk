@@ -57,6 +57,7 @@ model Conversation {
 
 model Message {
   id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  preKey             String?
   body               String?
   image              String?
   createdAt          DateTime       @default(now())
