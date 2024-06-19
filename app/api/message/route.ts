@@ -2,11 +2,13 @@ import prisma from '@/libs/prismadb'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  const { senderId, conversationId, body, createdAt } = await request.json()
+  const { senderId, preKey, conversationId, body, createdAt } =
+    await request.json()
 
   try {
     const message = await prisma.message.create({
       data: {
+        preKey,
         body,
         createdAt,
         sender: {

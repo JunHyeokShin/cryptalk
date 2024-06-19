@@ -30,8 +30,10 @@ export default function Person({ person }: Props) {
           res.data.conversationId !== params.conversationId
         ) {
           socket.emit("leave_conversation", params.conversationId)
+        if (params.conversationId && res.data.id !== params.conversationId) {
+          socket.emit('leave_conversation', params.conversationId)
         }
-        router.push(`/people/${res.data.conversationId}`)
+        router.push(`/people/${res.data.id}`)
       })
   }
 

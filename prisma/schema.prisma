@@ -19,6 +19,8 @@ model User {
   email              String?        @unique
   emailVerified      DateTime?
   image              String?
+  identityKey        String?
+  preKeys            String[]
   accounts           Account[]
   sessions           Session[]
 
@@ -55,6 +57,7 @@ model Conversation {
 
 model Message {
   id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  preKey             String?
   body               String?
   image              String?
   createdAt          DateTime       @default(now())
