@@ -1,3 +1,8 @@
+
+import { auth } from "@/auth"
+import SideMenu from "@/components/sidemenu/SideMenu"
+import { redirect } from "next/navigation"
+=======
 import { auth } from '@/auth'
 import KeyManager from '@/components/crypto/KeyManager'
 import SideMenu from '@/components/sidemenu/SideMenu'
@@ -11,7 +16,7 @@ export default async function MainLayout({ children }: Props) {
   const session = await auth()
 
   if (!session) {
-    redirect('/')
+    redirect("/")
   }
 
   return (

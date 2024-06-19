@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import axios from 'axios'
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { BsArrowRepeat, BsCheck, BsX } from 'react-icons/bs'
+import axios from "axios"
+import { useSession } from "next-auth/react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import { BsArrowRepeat, BsCheck, BsX } from "react-icons/bs"
 
 type Props = {
   clickModal: () => void
@@ -17,7 +17,7 @@ type Person = {
   image: string
 }
 
-type Response = 'ACCEPT' | 'DECLINE'
+type Response = "ACCEPT" | "DECLINE"
 
 export default function FriendRequestsModal({ clickModal }: Props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -39,7 +39,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
 
   const handleClick = async (friendRequesterId: string, response: Response) => {
     await axios
-      .post('/api/friend/request/response', {
+      .post("/api/friend/request/response", {
         friendRequestedId: currentUser?.id,
         friendRequesterId,
         response,
@@ -50,7 +50,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-30 shadow-lg">
-      <div className="bg-white px-4 py-2 rounded-lg sm:mx-auto sm:w-full sm:max-w-md w-full">
+      <div className="bg-white px-4 py-2 rounded-lg sm:mx-auto sm:w-full sm:max-w-md w-full dark:bg-neutral-900">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <h1 className="text-gary-900 font-medium mr-1">
@@ -61,7 +61,7 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                 setIsLoading(true)
                 setRefresh(refresh + 1)
               }}
-              className="rounded-xl p-2 hover:bg-gray-100 hover:shadow-md active:shadow-sm"
+              className="rounded-xl p-2 hover:bg-gray-100 hover:shadow-md active:shadow-sm dark:hover:bg-neutral-800 dark:hover:shadow-md dark:hover:shadow-stone-700 dark:active:shadow-sm"
             >
               <BsArrowRepeat className="text-[16px]" />
             </button>
@@ -69,14 +69,16 @@ export default function FriendRequestsModal({ clickModal }: Props) {
 
           <button
             onClick={clickModal}
-            className="rounded-xl hover:bg-gray-100 hover:shadow-md active:shadow-sm"
+            className="rounded-xl hover:bg-gray-100 hover:shadow-md active:shadow-sm dark:hover:bg-neutral-800 dark:hover:shadow-md dark:hover:shadow-stone-700 dark:active:shadow-sm"
           >
             <BsX className="text-[28px]" />
           </button>
         </div>
         <div>
           {isLoading ? (
-            <div className="my-2 text-gray-600">불러오는 중...</div>
+            <div className="my-2 text-gray-600 dark:text-gray-100">
+              불러오는 중...
+            </div>
           ) : (
             <div>
               {friendRequesters?.length === 0 ? (
@@ -84,12 +86,12 @@ export default function FriendRequestsModal({ clickModal }: Props) {
               ) : (
                 friendRequesters?.map((friendRequester) => (
                   <div className="my-2" key={friendRequester.id}>
-                    <div className="flex justify-between bg-gray-100 rounded-full">
+                    <div className="flex justify-between bg-gray-100 rounded-full dark:bg-neutral-800">
                       <div className="flex items-center p-2">
                         <Image
                           src={
                             friendRequester.image ||
-                            '/images/default_profile.png'
+                            "/images/default_profile.png"
                           }
                           alt="프로필 이미지"
                           width={36}
@@ -102,17 +104,17 @@ export default function FriendRequestsModal({ clickModal }: Props) {
                       </div>
                       <div className="flex items-center mx-2">
                         <button
-                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm"
+                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm dark:hover:bg-neutral-700 dark:hover:shadow-md dark:active:shadow-sm dark:hover:shadow-neutral-600"
                           onClick={() =>
-                            handleClick(friendRequester.id, 'ACCEPT')
+                            handleClick(friendRequester.id, "ACCEPT")
                           }
                         >
                           <BsCheck className="text-3xl text-green-600" />
                         </button>
                         <button
-                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm"
+                          className="rounded-xl hover:bg-gray-200 hover:shadow-md active:shadow-sm dark:hover:bg-neutral-700 dark:hover:shadow-md dark:active:shadow-sm dark:hover:shadow-neutral-600"
                           onClick={() =>
-                            handleClick(friendRequester.id, 'DECLINE')
+                            handleClick(friendRequester.id, "DECLINE")
                           }
                         >
                           <BsX className="text-3xl text-red-600" />

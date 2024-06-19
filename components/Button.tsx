@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import clsx from 'clsx'
+import clsx from "clsx"
 
 type Props = {
-  type?: 'button' | 'submit' | 'reset' | undefined
+  type?: "button" | "submit" | "reset" | undefined
   fullWidth?: boolean
   children?: React.ReactNode
   onClick?: () => void
@@ -29,14 +29,14 @@ export default function Button({
       className={clsx(
         `flex justify-center rounded-md px-3 py-2 text-sm font-semibold
         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`,
-        disabled && 'opacity-50 cursor-default',
-        fullWidth && 'w-full',
-        secondary ? 'text-gray-900' : 'text-white',
+        disabled && "opacity-50 cursor-default",
+        fullWidth && "w-full",
+        secondary ? "text-gray-900" : "text-white",
         danger &&
-          'bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600',
+          "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600",
         !secondary &&
           !danger &&
-          'bg-fuchsia-500 hover:bg-fuchsia-600 focus-visible:outline-fuchsia-600'
+          "bg-fuchsia-500 hover:bg-fuchsia-600 focus-visible:outline-fuchsia-600 active:bg-fuchsia-700"
       )}
     >
       {children}

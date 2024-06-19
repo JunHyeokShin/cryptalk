@@ -1,5 +1,13 @@
-'use client'
+"use client"
 
+
+import { useSocket } from "@/contexts/SocketContext"
+import axios from "axios"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import ConversationBody from "./ConversationBody"
+import { FieldValues, useForm } from "react-hook-form"
+import { BsSend } from "react-icons/bs"
 import { useSocket } from '@/contexts/SocketContext'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -180,6 +188,9 @@ export default function Conversation({ conversationId, session }: Props) {
         }
       }
     })
+    socket.emit("join_conversation", conversationId)
+    socket.on("receive_message", (message: Message) => {
+      setMessages((prev) => [...prev, message])
     socket.emit('join_conversation', conversationId)
     socket.on('receive_message', async (message: Message) => {
       let state: DRState = await getIDBDrState(currentUser?.id, conversationId)
@@ -248,6 +259,19 @@ export default function Conversation({ conversationId, session }: Props) {
 
   const onSubmit = async (data: any) => {
     const now = new Date()
+    let message
+    await axios
+      .post("/api/message", {
+        senderId: currentUser?.id,
+        conversationId,
+        body: data.input,
+        createdAt: now,
+      })
+      .then((res) => {
+        message = res.data
+      })
+    socket.emit("send_message", message)
+    reset()
     let message: Message
     if (!drState) {
       const remoteUserId =
@@ -346,7 +370,7 @@ export default function Conversation({ conversationId, session }: Props) {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      input: '',
+      input: "",
     },
   })
 
@@ -357,16 +381,16 @@ export default function Conversation({ conversationId, session }: Props) {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center border-t border-gray-100 min-h-16"
+        className="flex items-center border-t border-gray-200 dark:border-neutral-600 min-h-16"
       >
         <input
           id="input"
           type="text"
-          {...register('input')}
+          {...register("input")}
           required={true}
           autoComplete="off"
           placeholder="메시지를 입력하세요..."
-          className="bg-gray-100 rounded-full px-4 m-2 w-full h-11 shadow-inner"
+          className="bg-gray-100 rounded-full px-4 m-2 w-full h-11 shadow-inner dark:bg-neutral-100 dark:text-black dark:shadow-inner dark:shadow-gray-600"
         />
         <button
           type="submit"

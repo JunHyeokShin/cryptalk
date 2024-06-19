@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useSocket } from '@/contexts/SocketContext'
-import axios from 'axios'
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation'
+import { useSocket } from "@/contexts/SocketContext"
+import axios from "axios"
+import { useSession } from "next-auth/react"
+import Image from "next/image"
+import { useParams, useRouter } from "next/navigation"
 
 type Props = {
   person: {
@@ -25,6 +25,11 @@ export default function Person({ person }: Props) {
     axios
       .get(`/api/conversation/${currentUser?.id}/${person.id}`)
       .then((res) => {
+        if (
+          params.conversationId &&
+          res.data.conversationId !== params.conversationId
+        ) {
+          socket.emit("leave_conversation", params.conversationId)
         if (params.conversationId && res.data.id !== params.conversationId) {
           socket.emit('leave_conversation', params.conversationId)
         }
@@ -34,12 +39,12 @@ export default function Person({ person }: Props) {
 
   return (
     <button
-      className="flex items-center w-full p-2 rounded-full hover:bg-gray-200 hover:shadow-md active:shadow-sm hover:cursor-pointer"
+      className="flex items-center w-full p-2 rounded-full hover:bg-gray-200 hover:shadow-md active:shadow-sm hover:cursor-pointer dark:hover:bg-neutral-700 dark:hover:shadow-md dark:hover:shadow-neutral-600 dark:active:shadow-sm"
       type="button"
       onClick={handleClick}
     >
       <Image
-        src={person.image || '/images/default_profile.png'}
+        src={person.image || "/images/default_profile.png"}
         alt="프로필 이미지"
         width={36}
         height={36}
