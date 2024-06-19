@@ -37,7 +37,7 @@ export default function Person({ person }: Props) {
 
   return (
     <button
-      className="flex items-center w-full p-2 rounded-full hover:bg-gray-200 hover:shadow-md active:shadow-sm hover:cursor-pointer dark:hover:bg-neutral-700 dark:hover:shadow-md dark:hover:shadow-neutral-700 dark:active:shadow-sm"
+      className="flex items-center w-full p-2 rounded-full hover:bg-gray-200 hover:shadow-md active:shadow-sm hover:cursor-pointer dark:hover:bg-neutral-700 dark:hover:shadow-md dark:hover:shadow-neutral-600 dark:active:shadow-sm"
       type="button"
       onClick={handleClick}
     >
